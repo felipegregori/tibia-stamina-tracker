@@ -1,31 +1,44 @@
 let chars = JSON.parse(localStorage.getItem("chars")) || [];
-
 let editingIndex = null;
 
 // =====================
-// STAMINA ENGINE
+// STAMINA ENGINE (CORRIGIDO - CONTRA LOOP)
 // =====================
-
 function updateStamina(char) {
   let now = Date.now();
   let diff = Math.floor((now - char.lastUpdate) / 60000);
 
+  if (diff <= 0) return char;
+
   let stamina = char.stamina;
 
   while (diff > 0 && stamina < 2520) {
+    if (stamina >= 2340) {
+      let staminaNeeded = 2520 - stamina;
+      let timeNeeded = staminaNeeded * 6;
 
-    if (stamina > 2340) {
-      let gain = Math.min(diff / 6, 2520 - stamina);
-      stamina += gain;
-      diff -= gain * 6;
+      if (diff >= timeNeeded) {
+        stamina = 2520;
+        diff -= timeNeeded;
+      } else {
+        stamina += diff / 6;
+        diff = 0;
+      }
     } else {
-      let gain = Math.min(diff / 3, 2520 - stamina);
-      stamina += gain;
-      diff -= gain * 3;
+      let staminaNeeded = 2340 - stamina;
+      let timeNeeded = staminaNeeded * 3;
+
+      if (diff >= timeNeeded) {
+        stamina = 2340;
+        diff -= timeNeeded;
+      } else {
+        stamina += diff / 3;
+        diff = 0;
+      }
     }
   }
 
-  char.stamina = Math.floor(stamina);
+  char.stamina = Math.min(2520, Math.floor(stamina));
   char.lastUpdate = now;
 
   return char;
@@ -34,13 +47,11 @@ function updateStamina(char) {
 // =====================
 // RENDER
 // =====================
-
 function render() {
   let list = document.getElementById("charList");
   list.innerHTML = "";
 
   chars.forEach((c, index) => {
-
     c = updateStamina(c);
 
     let color = "green";
@@ -49,18 +60,13 @@ function render() {
 
     list.innerHTML += `
       <div class="card" onclick="openEdit(${index})">
-
         <button class="delete-btn" onclick="deleteChar(event, ${index})">X</button>
-
-        <div class="name">${c.name}</div>
+        <div class="name">${c.name || "Sem Nome"}</div>
         <div class="vocation">${c.vocation}</div>
-
         <div class="bar">
-          <div class="fill ${color}" style="width:${(c.stamina/2520)*100}%"></div>
+          <div class="fill ${color}" style="width:${(c.stamina / 2520) * 100}%"></div>
         </div>
-
         <div>${formatTime(c.stamina)}</div>
-
       </div>
     `;
   });
@@ -71,29 +77,30 @@ function render() {
 // =====================
 // FORMAT TIME
 // =====================
-
 function formatTime(min) {
   let h = Math.floor(min / 60);
   let m = min % 60;
-  return `${h}:${m.toString().padStart(2,'0')}h`;
+  return `${h}:${m.toString().padStart(2, '0')}h`;
 }
 
 // =====================
-// ADD CHAR (HORAS + MINUTOS)
+// ADD CHAR
 // =====================
-
 function addChar() {
-  let name = document.getElementById("name").value;
-  let vocation = document.getElementById("vocation").value;
+  let nameInput = document.getElementById("name");
+  let vocationInput = document.getElementById("vocation");
+  let hoursInput = document.getElementById("hours");
+  let minutesInput = document.getElementById("minutes");
 
-  let hours = parseInt(document.getElementById("hours").value) || 0;
-  let minutes = parseInt(document.getElementById("minutes").value) || 0;
+  let name = nameInput.value.trim();
+  let vocation = vocationInput.value;
+  let hours = parseInt(hoursInput.value) || 0;
+  let minutes = parseInt(minutesInput.value) || 0;
 
   let stamina = (hours * 60) + minutes;
 
-  if (stamina === 0) {
-    stamina = 2520; // padrão full
-  }
+  if (stamina === 0) stamina = 2520;
+  if (stamina > 2520) stamina = 2520;
 
   chars.push({
     name,
@@ -102,17 +109,22 @@ function addChar() {
     lastUpdate: Date.now()
   });
 
+  nameInput.value = "";
+  hoursInput.value = "";
+  minutesInput.value = "";
+  vocationInput.selectedIndex = 0;
+
   closeAddModal();
   render();
 }
 
 // =====================
-// EDIT CHAR (HORAS + MINUTOS)
+// EDIT CHAR
 // =====================
-
 function openEdit(index) {
   editingIndex = index;
 
+  chars[index] = updateStamina(chars[index]);
   let stamina = chars[index].stamina;
 
   let hours = Math.floor(stamina / 60);
@@ -129,6 +141,7 @@ function saveEdit() {
   let minutes = parseInt(document.getElementById("editMinutes").value) || 0;
 
   let stamina = (hours * 60) + minutes;
+  if (stamina > 2520) stamina = 2520;
 
   chars[editingIndex].stamina = stamina;
   chars[editingIndex].lastUpdate = Date.now();
@@ -141,19 +154,14 @@ function saveEdit() {
 // =====================
 // DELETE CHAR
 // =====================
-
 function deleteChar(event, index) {
   event.stopPropagation();
-
-  chars.splice(index, 1);
-
-  save();
-  render();
+  if (confirm("Deseja deletar este personagem?")) {
+    chars.splice(index, 1);
+    save();
+    render();
+  }
 }
-
-// =====================
-// STORAGE
-// =====================
 
 function save() {
   localStorage.setItem("chars", JSON.stringify(chars));
@@ -162,21 +170,17 @@ function save() {
 // =====================
 // MODALS
 // =====================
-
-function openAddModal() {
-  document.getElementById("addModal").classList.remove("hidden");
+function openAddModal() { document.getElementById("addModal").classList.remove("hidden"); }
+// Limpa os campos se fechar sem salvar também
+function closeAddModal() { 
+  document.getElementById("addModal").classList.add("hidden"); 
+  document.getElementById("name").value = "";
+  document.getElementById("hours").value = "";
+  document.getElementById("minutes").value = "";
 }
+define: function closeEditModal() { document.getElementById("editModal").classList.add("hidden"); }
 
-function closeAddModal() {
-  document.getElementById("addModal").classList.add("hidden");
-}
-
-function closeEditModal() {
-  document.getElementById("editModal").classList.add("hidden");
-}
-
-// =====================
-// INIT
-// =====================
+// Auto-update a cada 1 minuto
+setInterval(render, 60000);
 
 render();

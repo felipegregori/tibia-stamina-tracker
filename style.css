@@ -4,7 +4,7 @@ body {
   color: white;
   margin: 0;
   padding: 0;
-  -webkit-tap-highlight-color: transparent; /* Remove o flash azul ao tocar na tela do celular */
+  -webkit-tap-highlight-color: transparent; /* Remove flash azul ao clicar no mobile */
 }
 
 .container {
@@ -13,23 +13,43 @@ body {
   margin: 0 auto;
 }
 
+/* Elementos do Cabeçalho e Imagem do Dragão */
 .header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.app-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+#headerImage {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  margin-bottom: 4px;
+  display: block;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6));
 }
 
 h1 {
   font-size: 22px;
   margin: 0;
+  color: #f39c12; /* Tom dourado que combina com a logo */
+  text-align: center;
+  letter-spacing: 0.5px;
 }
 
-/* Botões Gerais */
 button {
   border: none;
   border-radius: 10px;
-  padding: 12px 16px;
+  padding: 12px 20px;
   cursor: pointer;
   font-weight: bold;
   background: #4caf50;
@@ -39,17 +59,18 @@ button {
 }
 
 button:active {
-  opacity: 0.8; /* Efeito visual ao tocar no celular */
+  opacity: 0.8;
 }
 
 /* Cards dos Personagens */
 .card {
   background: #1f1f1f;
-  margin-top: 12px;
+  margin-top: 14px;
   padding: 16px;
   border-radius: 16px;
   position: relative;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid #2d2d2d;
 }
 
 .name {
@@ -61,18 +82,18 @@ button:active {
   color: #999;
   font-size: 14px;
   margin-top: 4px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 /* Barra de Stamina */
 .bar {
   width: 100%;
-  height: 16px;
+  height: 14px;
   background: #333;
   border-radius: 999px;
   overflow: hidden;
   margin-top: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .fill {
@@ -94,7 +115,7 @@ button:active {
   border-radius: 6px;
 }
 
-/* Estrutura do Modal Fixada */
+/* Modais Estruturados para Mobile */
 .modal {
   position: fixed;
   inset: 0;
@@ -103,12 +124,8 @@ button:active {
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  opacity: 1;
-  visibility: visible;
-  transition: all 0.2s ease-in-out;
 }
 
-/* CLASSE QUE ESCONDE O MODAL (CRUCIAL) */
 .modal.hidden {
   display: none !important;
 }
@@ -116,19 +133,21 @@ button:active {
 .modal-content {
   width: 85%;
   max-width: 360px;
-  background: #242424; /* Fundo um pouco mais claro que o app para destacar */
+  background: #242424;
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+  border: 1px solid #3a3a3a;
 }
 
 .modal-content h2 {
   margin-top: 0;
   margin-bottom: 18px;
   font-size: 20px;
+  text-align: center;
 }
 
-/* Correção de Contraste dos Inputs e Selects */
+/* Correção Crucial de Contraste e Leitura no Celular */
 input,
 select {
   width: 100%;
@@ -136,22 +155,21 @@ select {
   padding: 14px;
   margin-top: 6px;
   margin-bottom: 16px;
-  border: 2px solid #3d3d3d; /* Borda visível para destacar o campo */
+  border: 2px solid #444;
   border-radius: 10px;
-  background: #1a1a1a; /* Fundo interno balanceado */
-  color: #ffffff; /* Texto digitado 100% branco */
-  font-size: 16px; /* Evita que o iOS dê zoom automático indesejado */
+  background: #161616;
+  color: #ffffff;
+  font-size: 16px; /* Impede zoom forçado indesejado no iOS */
   outline: none;
 }
 
-/* Cor do texto de exemplo (Placeholder) bem visível */
 input::placeholder {
-  color: #888888;
+  color: #777777;
 }
 
 input:focus,
 select:focus {
-  border-color: #4caf50; /* Destaca o campo ativo em verde */
+  border-color: #4caf50;
 }
 
 label {
@@ -162,32 +180,25 @@ label {
   font-weight: bold;
 }
 
-/* Alinhamento dos Botões dentro do Modal */
+/* Botões do Modal */
 .modal-content button {
   width: 100%;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
-/* Deixa os botões Salvar e Cancelar lado a lado para poupar espaço no celular */
 .modal-content button:nth-of-type(1) {
-  background: #4caf50; /* Salvar */
+  background: #4caf50; /* Botão Salvar */
 }
 
 .modal-content button:nth-of-type(2) {
-  background: #444444; /* Cancelar - tom neutro */
+  background: #444444; /* Botão Cancelar */
 }
 
-/* Responsividade Mídia */
 @media (max-width: 480px) {
   .container {
     padding: 12px;
   }
-
   h1 {
     font-size: 20px;
-  }
-
-  .card {
-    padding: 14px;
   }
 }
