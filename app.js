@@ -184,3 +184,20 @@ define: function closeEditModal() { document.getElementById("editModal").classLi
 setInterval(render, 60000);
 
 render();
+
+// ... resto do seu código lá em cima ...
+
+// Auto-update a cada 1 minuto
+setInterval(render, 60000);
+
+// =====================
+// INIT
+// =====================
+render();
+
+// REGISTRA O SERVICE WORKER PARA PERMITIR TELA CHEIA (PWA) NO CELULAR
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js')
+    .then(() => console.log('Service Worker Registrado com Sucesso!'))
+    .catch((err) => console.log('Erro ao registrar Service Worker:', err));
+}
