@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Stamina Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <h1>Stamina Tracker</h1>
+    <button onclick="openAddModal()">+ Char</button>
+  </div>
+
+  <div id="charList"></div>
+
+</div>
+
+<!-- MODAL ADD -->
+<div id="addModal" class="modal hidden">
+  <div class="modal-content">
+
+    <h2>Adicionar Char</h2>
+
+    <input id="name" placeholder="Nome do Char">
+
+    <select id="vocation">
+      <option value="Elite Knight">Elite Knight</option>
+      <option value="Royal Paladin">Royal Paladin</option>
+      <option value="Exaulted Monk">Exaulted Monk</option>
+      <option value="Elder Druid">Elder Druid</option>
+      <option value="Master Sorcerer">Master Sorcerer</option>
+    </select>
+
+    <input id="hours" type="number" placeholder="Horas (ex: 42)">
+    <input id="minutes" type="number" placeholder="Minutos (ex: 30)">
+
+    <button onclick="addChar()">Salvar</button>
+    <button onclick="closeAddModal()">Cancelar</button>
+
+  </div>
+</div>
+
+<!-- MODAL EDIT -->
+<div id="editModal" class="modal hidden">
+  <div class="modal-content">
+
+    <h2>Editar Stamina</h2>
+
+    <label for="editHours">Horas</label>
+    <input id="editHours" type="number" placeholder="Ex: 42">
+
+    <label for="editMinutes">Minutos</label>
+    <input id="editMinutes" type="number" placeholder="Ex: 30">
+
+    <button onclick="saveEdit()">Salvar</button>
+    <button onclick="closeEditModal()">Cancelar</button>
+
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
